@@ -38,21 +38,26 @@ function ENT:Draw3D2DDefence()
 		hText = "Building: " .. tostring(math.Round((self:GetDefenceHealth() / self.DefenceMaxHP) * 100)) .. "%"
 	end
 
-	local pos = Vector(0, 0, 0)
+	local pos, ang = Vector(0, 0, 0)
 	if self.RotateText then
 		pos.y = pos.y + min.y
 		pos.z = pos.z + (max.z * 0.5)
 		pos = pos + self.UIOffset
 
-		PIXEL.DrawEntOverhead(self, tText, frontAngs[1], pos)
-		PIXEL.DrawEntOverhead(self, hText, frontAngs[1], pos + subtextOffset, .02)
+		ang = frontAngs[1]
 	else
 		pos.x = pos.x + max.x
 		pos.z = pos.z + (max.z * 0.5)
 		pos = pos + self.UIOffset
 
-		PIXEL.DrawEntOverhead(self, tText, frontAngs[2], pos)
-		PIXEL.DrawEntOverhead(self, hText, frontAngs[2], pos + subtextOffset, .02)
+		ang = frontAngs[2]
+	end
+
+	local eyePos = localPly:EyePos()
+	local posDiff = self:LocalToWorld(pos) - eyePos
+	if posDiff:Dot(self:LocalToWorldAngles(ang):Up()) < 0 then
+		PIXEL.DrawEntOverhead(self, tText, ang, pos)
+		PIXEL.DrawEntOverhead(self, hText, ang, pos + subtextOffset, .02)
 	end
 
 	if self.RotateText then
@@ -61,18 +66,21 @@ function ENT:Draw3D2DDefence()
 		pos.y = (pos.y + max.y) - self.UIOffset.y
 		pos.z = (pos.z + (max.z * 0.5)) + self.UIOffset.z
 
-		PIXEL.DrawEntOverhead(self, tText, backAngs[1], pos)
-		PIXEL.DrawEntOverhead(self, hText, backAngs[1], pos + subtextOffset, .02)
-		--pos = self:LocalToWorld(pos)
+		ang = backAngs[1]
 	else
 		pos = Vector(0, 0, 0)
 		pos.x = pos.x + min.x
 		pos.z = pos.z + (max.z * 0.5)
 		pos = pos - self.UIOffset
 
-		PIXEL.DrawEntOverhead(self, tText, backAngs[2], pos)
-		PIXEL.DrawEntOverhead(self, hText, backAngs[2], pos + subtextOffset, .02)
+		ang = backAngs[2]
 	end
+
+	posDiff = self:LocalToWorld(pos) - eyePos
+	if posDiff:Dot(self:LocalToWorldAngles(ang):Up()) > 0 then return end
+
+	PIXEL.DrawEntOverhead(self, tText, ang, pos)
+	PIXEL.DrawEntOverhead(self, hText, ang, pos + subtextOffset, .02)
 end
 
 local progressMat = Material("models/effects/comball_tape")
