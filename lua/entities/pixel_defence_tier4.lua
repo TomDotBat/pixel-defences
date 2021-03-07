@@ -4,7 +4,7 @@ AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "pixel_defence_base"
 
-ENT.PrintName = "Defence Tier 1"
+ENT.PrintName = "Defence Tier 4"
 ENT.Category = "PIXEL Defences"
 ENT.Author = "Tom.bat"
 ENT.Contact = "tom@tomdotbat.dev"
