@@ -9,4 +9,4 @@ SWEP.Spawnable = true
 SWEP.AdminOnly = true
 
 SWEP.UseHands = false
-SWEP.HealSpeed = 0.05
+SWEP.HealRate = 0.02
