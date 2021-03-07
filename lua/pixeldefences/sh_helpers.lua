@@ -14,7 +14,7 @@ function PIXEL.Defences.GetLookingAtEnt(ply)
     if not string.StartWith(ent:GetClass(), "pixel_defence") then return end
     if not ent:GetIsPlaced() then return end
 
-    return ent
+    return ent, tr.HitPos
 end
 
 function PIXEL.Defences.GetPlacementPos(prop, ply, isMax)
