@@ -19,7 +19,7 @@ function ENT:Initialize()
     phys:Wake()
 end
 
-function ENT:SetupDefense()
+function ENT:SetupDefence()
     self:PhysicsDestroy()
     self:PhysicsInit(SOLID_VPHYSICS)
     self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -39,7 +39,6 @@ function ENT:Build()
 
     if self:GetDefenceHealth() >= self.DefenceMaxHP then
         self:SetIsBuilding(false)
-
         return
     end
 
@@ -48,15 +47,13 @@ function ENT:Build()
     end)
 end
 
-function ENT:OnTakeDamage(dmginfo)
-    if self:GetIsPlaced() then
-        local newHealth = self:GetDefenceHealth() - math.Round(dmginfo:GetDamage())
-        self:SetDefenceHealth(newHealth)
+function ENT:OnTakeDamage(dmgInfo)
+    if not self:GetIsPlaced() then return end
 
-        if newHealth < 1 then
-            self:Remove()
-        end
-    end
+    local newHealth = self:GetDefenceHealth() - math.Round(dmgInfo:GetDamage())
+    self:SetDefenceHealth(newHealth)
+
+    if newHealth < 1 then self:Remove() end
 end
 
 function ENT:Use(ply)
@@ -77,7 +74,6 @@ function ENT:Use(ply)
 end
 
 function ENT:Think()
-    if self:GetDefenceHealth() > self.DefenceMaxHP then
-        self:SetDefenceHealth(self.DefenceMaxHP)
-    end
+    if self:GetDefenceHealth() < self.DefenceMaxHP then return end
+    self:SetDefenceHealth(self.DefenceMaxHP)
 end

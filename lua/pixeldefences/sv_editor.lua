@@ -1,56 +1,61 @@
 
 net.Receive("PIXEL.Defences.AbortEditing", function(len, ply)
     local ent = net.ReadEntity()
+    if not IsValid(ent) then return end
 
-    if (ply == ent:CPPIGetOwner()) then
-        ent:SetIsPlacing(false)
-        ent:SetMaterial(ent.OriginalMaterial)
-        net.Start("PIXEL.Defences.AbortEditing")
-        net.Send(ply)
+    if ply ~= ent:CPPIGetOwner() then return end
 
-        ply:StripWeapon("pixel_defences_editor")
-        PIXEL.Defences.EditingPlayers[ply:SteamID64()] = false
-    end
+    ent:SetIsPlacing(false)
+    ent:SetMaterial(ent.OriginalMaterial)
+
+    net.Start("PIXEL.Defences.AbortEditing")
+    net.Send(ply)
+
+    ply:StripWeapon("pixel_defences_editor")
+
+    PIXEL.Defences.EditingPlayers[ply:SteamID64()] = false
 end)
 
 net.Receive("PIXEL.Defences.FinishEditing", function(len, ply)
     local ent = net.ReadEntity()
-    local plyAng = net.ReadUInt(9)
 
+    if not IsValid(ent) then return end
     if not ent:GetIsPlacing() then return end
+    if ply ~= ent:CPPIGetOwner() then return end
 
-    if (ply == ent:CPPIGetOwner()) then
-        ent:SetModel(ent.DefenceModel)
-        local pos, ang = PIXEL.Defences.GetPlacementPos(ent, ply, ent.Max)
-        if not pos then
-            ent:SetIsPlacing(false)
-            ent:SetModel(ent.BoxModel)
-            ent:SetMaterial(ent.OriginalMaterial)
-            PIXEL.Defences.EditingPlayers[ply:SteamID64()] = false
-            return
-        end
+    ent:SetModel(ent.DefenceModel)
 
-        ang.Yaw = plyAng
-
-        ent:SetPos(pos)
-        ent:SetAngles(ang)
-
+    local pos, ang = PIXEL.Defences.GetPlacementPos(ent, ply, ent.Max)
+    if not pos then
         ent:SetIsPlacing(false)
-        ent:SetIsPlaced(true)
-        ent:SetIsBuilding(true)
-
-        ent:SetModel(ent.DefenceModel)
+        ent:SetModel(ent.BoxModel)
         ent:SetMaterial(ent.OriginalMaterial)
 
-        ent:SetupDefense()
-        ent:Build()
-
-        net.Start("PIXEL.Defences.FinishEditing")
-        net.Send(ply)
-
-        ply:StripWeapon("pixel_defences_editor")
         PIXEL.Defences.EditingPlayers[ply:SteamID64()] = false
+        return
     end
+
+    ang.Yaw = net.ReadUInt(9)
+
+    ent:SetPos(pos)
+    ent:SetAngles(ang)
+
+    ent:SetIsPlacing(false)
+    ent:SetIsPlaced(true)
+    ent:SetIsBuilding(true)
+
+    ent:SetModel(ent.DefenceModel)
+    ent:SetMaterial(ent.OriginalMaterial)
+
+    ent:SetupDefence()
+    ent:Build()
+
+    net.Start("PIXEL.Defences.FinishEditing")
+    net.Send(ply)
+
+    ply:StripWeapon("pixel_defences_editor")
+
+    PIXEL.Defences.EditingPlayers[ply:SteamID64()] = false
 end)
 
 hook.Add("playerBoughtCustomEntity", "PIXEL.Defences.SetOwner", function(ply, entTable, ent, price)
@@ -70,7 +75,7 @@ hook.Add("PhysgunPickup", "PIXEL.Defences.PreventPickupWhileEditing", function(p
     if not ply:IsAdmin() then return false end
 end)
 
-util.AddNetworkString("PIXEL.Defences.StartEditing")  
+util.AddNetworkString("PIXEL.Defences.StartEditing")
 util.AddNetworkString("PIXEL.Defences.AbortEditing")
 util.AddNetworkString("PIXEL.Defences.AbortEditing2")
 util.AddNetworkString("PIXEL.Defences.FinishEditing")

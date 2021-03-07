@@ -1,95 +1,87 @@
 
-if not PIXEL.Defences.Editor then
-    PIXEL.Defences.Editor = {}
-    PIXEL.Defences.Editor.IsEditing = false
-    PIXEL.Defences.Editor.Yaw = 0
-    PIXEL.Defences.Editor.CurBox = nil
-    PIXEL.Defences.Editor.GhostProp = nil
-    PIXEL.Defences.Editor.ValidPlacement = false
-end
+local editor = PIXEL.Defences.Editor or {Yaw = 0}
+PIXEL.Defences.Editor = editor
 
 hook.Add("HUDShouldDraw", "PIXEL.Defences.PreventWeaponSelect", function(name)
-    if (name == "CHudWeaponSelection" and PIXEL.Defences.Editor.IsEditing) then return false end
+    if name == "CHudWeaponSelection" and editor.IsEditing then return false end
 end)
 
-hook.Add( "CreateMove", "PIXEL.Defences.RotateWithScroller", function()
-    if (PIXEL.Defences.Editor.IsEditing) then
-        if (input.WasMousePressed(MOUSE_WHEEL_UP)) then
-            PIXEL.Defences.Editor.Yaw = PIXEL.Defences.Editor.Yaw + 5
-            if (PIXEL.Defences.Editor.Yaw > 360) then PIXEL.Defences.Editor.Yaw = 5 end
-        elseif (input.WasMousePressed(MOUSE_WHEEL_DOWN)) then
-            PIXEL.Defences.Editor.Yaw = PIXEL.Defences.Editor.Yaw - 5
-            if (PIXEL.Defences.Editor.Yaw < 0) then PIXEL.Defences.Editor.Yaw = 355 end
-        end
+hook.Add("CreateMove", "PIXEL.Defences.RotateWithScroller", function()
+    if not editor.IsEditing then return end
 
-        if (input.WasMousePressed(MOUSE_LEFT) and PIXEL.Defences.Editor.ValidPlacement) then
-            net.Start("PIXEL.Defences.FinishEditing")
-             net.WriteEntity(PIXEL.Defences.Editor.CurBox)
-             net.WriteUInt(PIXEL.Defences.Editor.Yaw, 9)
-            net.SendToServer()
-
-            PIXEL.Defences.Editor.IsEditing = false
-        elseif (input.WasMousePressed(MOUSE_RIGHT)) then
-            net.Start("PIXEL.Defences.AbortEditing")
-             net.WriteEntity(PIXEL.Defences.Editor.CurBox)
-            net.SendToServer()
-
-            PIXEL.Defences.Editor.IsEditing = false
-        end      
+    if input.WasMousePressed(MOUSE_WHEEL_UP) then
+        editor.Yaw = editor.Yaw + 5
+        if editor.Yaw > 360 then editor.Yaw = 5 end
+    elseif input.WasMousePressed(MOUSE_WHEEL_DOWN) then
+        editor.Yaw = editor.Yaw - 5
+        if editor.Yaw < 0 then editor.Yaw = 355 end
     end
-end )
+
+    if input.WasMousePressed(MOUSE_LEFT) and editor.ValidPlacement then
+        net.Start("PIXEL.Defences.FinishEditing")
+         net.WriteEntity(editor.CurBox)
+         net.WriteUInt(editor.Yaw, 9)
+        net.SendToServer()
+
+        editor.IsEditing = false
+    elseif input.WasMousePressed(MOUSE_RIGHT) then
+        net.Start("PIXEL.Defences.AbortEditing")
+         net.WriteEntity(editor.CurBox)
+        net.SendToServer()
+
+        editor.IsEditing = false
+    end
+end)
 
 hook.Add("Think", "PIXEL.Defences.UpdateGhost", function()
-    if (!PIXEL.Defences.Editor.IsEditing) then 
-        if (IsValid(PIXEL.Defences.Editor.GhostProp)) then
-            PIXEL.Defences.Editor.GhostProp:Remove()
+    if not editor.IsEditing then
+        if IsValid(editor.GhostProp) then
+            editor.GhostProp:Remove()
 
-            PIXEL.Defences.Editor.CurBox = nil
-            PIXEL.Defences.Editor.GhostProp = nil
+            editor.CurBox = nil
+            editor.GhostProp = nil
         end
         return
     end
 
-    if (not IsValid(PIXEL.Defences.Editor.GhostProp)) then
-        PIXEL.Defences.Editor.GhostProp = ClientsideModel(PIXEL.Defences.Editor.CurBox.DefenceModel, RENDERGROUP_STATIC)
-        PIXEL.Defences.Editor.GhostProp:SetMaterial("models/wireframe")
+    if not IsValid(editor.GhostProp) then
+        editor.GhostProp = ClientsideModel(editor.CurBox.DefenceModel, RENDERGROUP_STATIC)
+        editor.GhostProp:SetMaterial("models/wireframe")
     end
 
-    local pos, ang = PIXEL.Defences.GetPlacementPos(PIXEL.Defences.Editor.GhostProp, LocalPlayer(), PIXEL.Defences.Editor.CurBox.Max)
-
-    if (!pos) then
-        --PIXEL.Defences.Editor.GhostProp:SetNoDraw(true)
-        PIXEL.Defences.Editor.GhostProp:SetColor(Color(255, 0, 0))
-        PIXEL.Defences.Editor.ValidPlacement = false
+    local pos, ang = PIXEL.Defences.GetPlacementPos(editor.GhostProp, LocalPlayer(), editor.CurBox.Max)
+    if not pos then
+        editor.GhostProp:SetColor(PIXEL.Colors.Negative)
+        editor.ValidPlacement = false
         return
     end
 
-    ang.Yaw = PIXEL.Defences.Editor.Yaw
+    ang.Yaw = editor.Yaw
 
-    PIXEL.Defences.Editor.GhostProp:SetColor(Color(255, 255, 255))
-    PIXEL.Defences.Editor.GhostProp:SetAngles(ang)
-    PIXEL.Defences.Editor.GhostProp:SetPos(pos)
-    PIXEL.Defences.Editor.GhostProp:SetNoDraw(false)
-    PIXEL.Defences.Editor.ValidPlacement = true
+    editor.GhostProp:SetColor(color_white)
+    editor.GhostProp:SetAngles(ang)
+    editor.GhostProp:SetPos(pos)
+    editor.GhostProp:SetNoDraw(false)
+    editor.ValidPlacement = true
 end)
 
 net.Receive("PIXEL.Defences.StartEditing", function(len, ply)
-    PIXEL.Defences.Editor.CurBox = net.ReadEntity()
-    PIXEL.Defences.Editor.IsEditing = true
+    editor.CurBox = net.ReadEntity()
+    editor.IsEditing = true
 end)
 
 net.Receive("PIXEL.Defences.AbortEditing", function(len, ply)
-    PIXEL.Defences.Editor.IsEditing = false
-    PIXEL.Defences.Editor.CurBox = nil
+    editor.IsEditing = false
+    editor.CurBox = nil
 end)
 
 net.Receive("PIXEL.Defences.AbortEditing2", function(len, ply)
     net.Start("PIXEL.Defences.AbortEditing")
-     net.WriteEntity(PIXEL.Defences.Editor.CurBox)
+     net.WriteEntity(editor.CurBox)
     net.SendToServer()
 end)
 
 net.Receive("PIXEL.Defences.FinishEditing", function(len, ply)
-    PIXEL.Defences.Editor.IsEditing = false
-    PIXEL.Defences.Editor.CurBox = nil
+    editor.IsEditing = false
+    editor.CurBox = nil
 end)
