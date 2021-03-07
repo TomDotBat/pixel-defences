@@ -26,6 +26,7 @@ end
 
 local frontAngs = {Angle(0, 0, 90), Angle(0, 90, 90)}
 local backAngs = {Angle(0, 180, 90), Angle(0, 270, 90)}
+local subtextOffset = Vector(0, 0, -1.4)
 
 function ENT:Draw3D2DDefence()
 	local min, max = self:GetModelBounds()
@@ -44,12 +45,14 @@ function ENT:Draw3D2DDefence()
 		pos = pos + self.UIOffset
 
 		PIXEL.DrawEntOverhead(self, tText, frontAngs[1], pos)
+		PIXEL.DrawEntOverhead(self, hText, frontAngs[1], pos + subtextOffset, .02)
 	else
 		pos.x = pos.x + max.x
 		pos.z = pos.z + (max.z * 0.5)
 		pos = pos + self.UIOffset
 
 		PIXEL.DrawEntOverhead(self, tText, frontAngs[2], pos)
+		PIXEL.DrawEntOverhead(self, hText, frontAngs[2], pos + subtextOffset, .02)
 	end
 
 	if self.RotateText then
@@ -59,6 +62,7 @@ function ENT:Draw3D2DDefence()
 		pos.z = (pos.z + (max.z * 0.5)) + self.UIOffset.z
 
 		PIXEL.DrawEntOverhead(self, tText, backAngs[1], pos)
+		PIXEL.DrawEntOverhead(self, hText, backAngs[1], pos + subtextOffset, .02)
 		--pos = self:LocalToWorld(pos)
 	else
 		pos = Vector(0, 0, 0)
@@ -67,9 +71,8 @@ function ENT:Draw3D2DDefence()
 		pos = pos - self.UIOffset
 
 		PIXEL.DrawEntOverhead(self, tText, backAngs[2], pos)
+		PIXEL.DrawEntOverhead(self, hText, backAngs[2], pos + subtextOffset, .02)
 	end
-
-	--PIXEL.DrawEntOverhead(ent, hText, angleOverride, posOverride, scaleOverride)
 end
 
 local progressMat = Material("models/effects/comball_tape")
