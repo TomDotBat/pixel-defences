@@ -43,6 +43,7 @@ function ENT:Build()
     end
 
     timer.Simple(self.DefenceBuildTime / self.DefenceMaxHP, function()
+        if not IsValid(self) then return end
         self:Build()
     end)
 end
