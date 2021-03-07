@@ -37,23 +37,18 @@ end
 if SERVER then return end
 
 function SWEP:DrawHUD()
-    if (not oglbdeditor.isEditing) then return end
-    local col
+    if not PIXEL.Defences.Editor.IsEditing then return end
 
-    if (oglbdeditor.validPlacement) then
-        col = Color(255, 255, 255)
-    else
-        col = Color(255, 20, 50)
-    end
+    local col = PIXEL.Defences.Editor.ValidPlacement and PIXEL.Colors.PrimaryText or PIXEL.Colors.Negative
+    local text = "Placing Tier " .. PIXEL.Defences.Editor.CurBox.DefenseTier .. " Defence"
 
-    local text = "Placing Tier " .. oglbdeditor.curBox.DefenseTier .. " Defence"
     surface.SetFont("oglDefenseHudTitle")
     surface.SetTextColor(col)
     local w, h = surface.GetTextSize(text)
     surface.SetTextPos((ScrW() / 2) - (w / 2), (ScrH() * 0.99) - 150)
     surface.DrawText(text)
     draw.RoundedBox(0, (ScrW() / 2) - (w / 2), (ScrH() * 0.99) - h * 2, w, 5, col)
-    text = "Rotation: " .. oglbdeditor.yaw .. "°"
+    text = "Rotation: " .. PIXEL.Defences.Editor.Yaw .. "°"
     surface.SetFont("oglDefenseHudSubTitle")
     w, h = surface.GetTextSize(text)
     surface.SetTextPos((ScrW() / 2) - (w / 2), (ScrH() * 0.99) - 90)
