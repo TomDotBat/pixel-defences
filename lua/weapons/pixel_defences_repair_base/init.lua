@@ -17,5 +17,5 @@ function SWEP:PrimaryAttack()
 
 	lookingAtEnt:SetDefenceHealth(newHealth)
 
-	self.NextUse = CurTime() + self.HealSpeed
+	self.NextUse = CurTime() + self.HealRate
 end

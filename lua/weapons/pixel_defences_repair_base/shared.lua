@@ -30,7 +30,7 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
 
 SWEP.CurHealth = 0
-SWEP.HealSpeed = 0.1
+SWEP.HealRate = 0.1
 
 function SWEP:Initialize()
     self:SetHoldType("idle")
