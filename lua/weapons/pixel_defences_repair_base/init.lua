@@ -13,7 +13,7 @@ function SWEP:PrimaryAttack()
 	if not lookingAtEnt then return end
 
 	local newhealth = lookingAtEnt:GetDefenceHealth() + 1
-	if newhealth > lookingAtEnt.DefenseHP then return end
+	if newhealth > lookingAtEnt.DefenceMaxHP then return end
 
 	lookingAtEnt:SetDefenceHealth(newhealth)
 

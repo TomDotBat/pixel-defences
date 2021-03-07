@@ -16,10 +16,10 @@ ENT.AdminSpawnable = true
 
 ENT.BoxModel = "models/props_junk/wood_crate001a.mdl"
 
-ENT.DefenseTier = 3
-ENT.DefenseHP = 2000
-ENT.DefenseBuildTime = 120 --Amount of time it takes for the initial build to complete
-ENT.DefenseModel = "models/props_fortifications/block_wall_03.mdl"
+ENT.DefenceTier = 3
+ENT.DefenceMaxHP = 2000
+ENT.DefenceBuildTime = 120 --Amount of time it takes for the initial build to complete
+ENT.DefenceModel = "models/props_fortifications/block_wall_03.mdl"
 
 --Editor/3D2D configuration
 ENT.Max = false --Swap this from true/false if the prop is floating above the ground in the editor

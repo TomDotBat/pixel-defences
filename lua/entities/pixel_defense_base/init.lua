@@ -11,14 +11,12 @@ function ENT:Initialize()
     self:SetMoveType(MOVETYPE_VPHYSICS)
     self:SetSolid(SOLID_VPHYSICS)
     self:SetUseType(SIMPLE_USE)
-    
+
     self.OriginalMaterial = self:GetMaterial()
 
     local phys = self:GetPhysicsObject()
-
-    if (phys:IsValid()) then
-        phys:Wake()
-    end
+    if not IsValid(phys) then return end
+    phys:Wake()
 end
 
 function ENT:SetupDefense()
@@ -27,25 +25,25 @@ function ENT:SetupDefense()
     self:SetMoveType(MOVETYPE_VPHYSICS)
     self:SetSolid(SOLID_VPHYSICS)
     self:SetUseType(SIMPLE_USE)
-    local phys = self:GetPhysicsObject()
-    phys:EnableMotion(false)
 
-    if (phys:IsValid()) then
-        phys:Wake()
-    end
+    local phys = self:GetPhysicsObject()
+    if not IsValid(phys) then return end
+
+    phys:Wake()
+    phys:EnableMotion(false)
 end
 
 function ENT:Build()
     if not self:GetIsBuilding() then return end
     self:SetDefenceHealth(self:GetDefenceHealth() + 1)
 
-    if (self:GetDefenceHealth() >= self.DefenseHP) then
+    if self:GetDefenceHealth() >= self.DefenceMaxHP then
         self:SetIsBuilding(false)
 
         return
     end
 
-    timer.Simple(self.DefenseBuildTime / self.DefenseHP, function()
+    timer.Simple(self.DefenceBuildTime / self.DefenceMaxHP, function()
         self:Build()
     end)
 end
@@ -55,7 +53,7 @@ function ENT:OnTakeDamage(dmginfo)
         local newHealth = self:GetDefenceHealth() - math.Round(dmginfo:GetDamage())
         self:SetDefenceHealth(newHealth)
 
-        if (newHealth < 1) then
+        if newHealth < 1 then
             self:Remove()
         end
     end
@@ -79,7 +77,7 @@ function ENT:Use(ply)
 end
 
 function ENT:Think()
-    if self:GetDefenceHealth() > self.DefenseHP then
-        self:SetDefenceHealth(self.DefenseHP)
+    if self:GetDefenceHealth() > self.DefenceMaxHP then
+        self:SetDefenceHealth(self.DefenceMaxHP)
     end
 end

@@ -19,5 +19,5 @@ function SWEP:PrimaryAttack()
     local lookingAtEnt = PIXEL.Defences.GetLookingAtEnt(self:GetOwner())
     if not lookingAtEnt then return end
     
-    lookingAtEnt:SetDefenceHealth(lookingAtEnt.DefenseHP)
+    lookingAtEnt:SetDefenceHealth(lookingAtEnt.DefenceMaxHP)
 end

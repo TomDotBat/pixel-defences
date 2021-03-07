@@ -51,7 +51,7 @@ hook.Add("Think", "PIXEL.Defences.UpdateGhost", function()
     end
 
     if (not IsValid(PIXEL.Defences.Editor.GhostProp)) then
-        PIXEL.Defences.Editor.GhostProp = ClientsideModel(PIXEL.Defences.Editor.CurBox.DefenseModel, RENDERGROUP_STATIC)
+        PIXEL.Defences.Editor.GhostProp = ClientsideModel(PIXEL.Defences.Editor.CurBox.DefenceModel, RENDERGROUP_STATIC)
         PIXEL.Defences.Editor.GhostProp:SetMaterial("models/wireframe")
     end
 

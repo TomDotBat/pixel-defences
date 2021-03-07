@@ -23,7 +23,7 @@ function ENT:Draw()
 	if self:GetIsPlaced() then
 		self:Draw3D2DDefence()
 	else
-		PIXEL.DrawEntOverhead(self, "Tier " .. self.DefenseTier .. " Defence")
+		PIXEL.DrawEntOverhead(self, "Tier " .. self.DefenceTier .. " Defence")
 	end
 end
 
@@ -52,11 +52,11 @@ function ENT:Draw3D2DDefence()
 		ang:RotateAroundAxis(ang:Forward(), 90)
 	end
 
-	local tText = "Tier " .. self.DefenseTier .. " Defence"
+	local tText = "Tier " .. self.DefenceTier .. " Defence"
 	local hText = "Health: " .. self:GetDefenceHealth()
 
 	if self:GetIsBuilding() then
-		hText = "Building: " .. tostring(math.Round((self:GetDefenceHealth() / self.DefenseHP) * 100)) .. "%"
+		hText = "Building: " .. tostring(math.Round((self:GetDefenceHealth() / self.DefenceMaxHP) * 100)) .. "%"
 	end
 
 	cam.Start3D2D(pos, ang, 0.028)
@@ -116,7 +116,7 @@ local progressMat = Material("models/effects/comball_tape")
 function ENT:DrawSpawning()
 	self.BuildProgress = Lerp(FrameTime(), self.BuildProgress, self:GetDefenceHealth())
 
-	local progress = self.BuildProgress / self.DefenseHP
+	local progress = self.BuildProgress / self.DefenceMaxHP
 
 	render.MaterialOverride(progressMat)
 

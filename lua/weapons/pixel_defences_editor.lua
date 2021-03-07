@@ -40,7 +40,7 @@ function SWEP:DrawHUD()
     if not PIXEL.Defences.Editor.IsEditing then return end
 
     local col = PIXEL.Defences.Editor.ValidPlacement and PIXEL.Colors.PrimaryText or PIXEL.Colors.Negative
-    local text = "Placing Tier " .. PIXEL.Defences.Editor.CurBox.DefenseTier .. " Defence"
+    local text = "Placing Tier " .. PIXEL.Defences.Editor.CurBox.DefenceTier .. " Defence"
 
     surface.SetFont("oglDefenseHudTitle")
     surface.SetTextColor(col)

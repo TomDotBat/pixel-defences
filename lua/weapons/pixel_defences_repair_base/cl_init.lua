@@ -11,9 +11,9 @@ function SWEP:DrawHUD()
 
 	self.CurHealth = Lerp(FrameTime() * 5, self.CurHealth, facingEnt:GetDefenceHealth())
 
-	local col = Color(255, 255 * (self.CurHealth / facingEnt.DefenseHP), 255 * (self.CurHealth / facingEnt.DefenseHP))
+	local col = Color(255, 255 * (self.CurHealth / facingEnt.DefenceMaxHP), 255 * (self.CurHealth / facingEnt.DefenceMaxHP))
 
-	local text = "Tier " .. facingEnt.DefenseTier .. " Defence"
+	local text = "Tier " .. facingEnt.DefenceTier .. " Defence"
 	surface.SetFont("oglDefenseHudTitle")
 	surface.SetTextColor(col)
 	local w,h = surface.GetTextSize(text)
@@ -37,7 +37,7 @@ function SWEP:DrawHUD()
 			render.DrawBeam(vm:GetAttachment("1").Pos, tr.HitPos, 4, 0, 12.5, Color(0, 255, 0, 255))
 		cam.End3D()
 
-		if (input.IsMouseDown(MOUSE_LEFT) and (facingEnt:GetDefenceHealth() < facingEnt.DefenseHP)) then
+		if (input.IsMouseDown(MOUSE_LEFT) and (facingEnt:GetDefenceHealth() < facingEnt.DefenceMaxHP)) then
 			local effectdata = EffectData()
 			effectdata:SetOrigin(tr.HitPos)
 			effectdata:SetMagnitude(1)

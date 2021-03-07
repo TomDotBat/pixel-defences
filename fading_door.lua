@@ -265,7 +265,7 @@ local function fadeActivate(self)
 	if self.fadeActive then return end
 
 	if self.IsPIXELDefence then
-		if (self:GetDefenceHealth() < self.DefenseHP) then
+		if (self:GetDefenceHealth() < self.DefenceMaxHP) then
 			self:CPPIGetOwner():SendLua("notification.AddLegacy('Unable to open door, your defense is low on health.', 6)")
 			return
 		end

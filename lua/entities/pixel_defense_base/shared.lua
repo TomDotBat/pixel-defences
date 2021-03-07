@@ -18,10 +18,10 @@ ENT.IsPIXELDefence = true
 
 ENT.BoxModel = "models/props_junk/wood_crate001a.mdl"
 
-ENT.DefenseTier = 0
-ENT.DefenseHP = 1
-ENT.DefenseBuildTime = 30
-ENT.DefenseModel = "models/props_c17/fence01b.mdl"
+ENT.DefenceTier = 0
+ENT.DefenceMaxHP = 1
+ENT.DefenceBuildTime = 30
+ENT.DefenceModel = "models/props_c17/fence01b.mdl"
 
 ENT.Max = true
 ENT.RotateText = false

@@ -20,7 +20,7 @@ net.Receive("PIXEL.Defences.FinishEditing", function(len, ply)
     if not ent:GetIsPlacing() then return end
 
     if (ply == ent:CPPIGetOwner()) then
-        ent:SetModel(ent.DefenseModel)
+        ent:SetModel(ent.DefenceModel)
         local pos, ang = PIXEL.Defences.GetPlacementPos(ent, ply, ent.Max)
         if not pos then
             ent:SetIsPlacing(false)
@@ -39,7 +39,7 @@ net.Receive("PIXEL.Defences.FinishEditing", function(len, ply)
         ent:SetIsPlaced(true)
         ent:SetIsBuilding(true)
 
-        ent:SetModel(ent.DefenseModel)
+        ent:SetModel(ent.DefenceModel)
         ent:SetMaterial(ent.OriginalMaterial)
 
         ent:SetupDefense()
