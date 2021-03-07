@@ -8,7 +8,7 @@ ENT.PrintName = "Defence Tier 3"
 ENT.Category = "PIXEL Defences"
 ENT.Author = "Tom.bat"
 ENT.Contact = "tom@tomdotbat.dev"
-ENT.Purpose = "Used for defending your base."
+ENT.Purpose = "Used for defending yourself during combat."
 ENT.Instructions = "Press E on the box and place the defence where you want it."
 
 ENT.Spawnable = true
