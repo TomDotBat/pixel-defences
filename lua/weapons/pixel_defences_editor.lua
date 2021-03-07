@@ -36,37 +36,33 @@ end
 
 if SERVER then return end
 
+PIXEL.RegisterFont("Defences.EditorType", "Open Sans Bold", 40)
+PIXEL.RegisterFont("Defences.EditorRotation", "Open Sans SemiBold", 34)
+PIXEL.RegisterFont("Defences.EditorHint", "Open Sans SemiBold", 24)
+
 function SWEP:DrawHUD()
     if not PIXEL.Defences.Editor.IsEditing then return end
 
-    local col = PIXEL.Defences.Editor.ValidPlacement and PIXEL.Colors.PrimaryText or PIXEL.Colors.Negative
-    local text = "Placing Tier " .. PIXEL.Defences.Editor.CurBox.DefenceTier .. " Defence"
+    local centerW = ScrW() * .5
+    local textX = ScrH() * .8
 
-    surface.SetFont("oglDefenseHudTitle")
-    surface.SetTextColor(col)
-    local w, h = surface.GetTextSize(text)
-    surface.SetTextPos((ScrW() / 2) - (w / 2), (ScrH() * 0.99) - 150)
-    surface.DrawText(text)
-    draw.RoundedBox(0, (ScrW() / 2) - (w / 2), (ScrH() * 0.99) - h * 2, w, 5, col)
-    text = "Rotation: " .. PIXEL.Defences.Editor.Yaw .. "°"
-    surface.SetFont("oglDefenseHudSubTitle")
-    w, h = surface.GetTextSize(text)
-    surface.SetTextPos((ScrW() / 2) - (w / 2), (ScrH() * 0.99) - 90)
-    surface.DrawText(text)
-    surface.SetTextColor(255, 255, 255)
-    text = "Left Click: Place"
-    surface.SetFont("oglDefenseHudHint")
-    w, h = surface.GetTextSize(text)
-    surface.SetTextPos((ScrW() / 2) - (w / 2) - 200, ScrH() - h)
-    surface.DrawText(text)
-    text = "Right Click: Cancel"
-    surface.SetFont("oglDefenseHudHint")
-    w, h = surface.GetTextSize(text)
-    surface.SetTextPos((ScrW() / 2) - (w / 2), ScrH() - h)
-    surface.DrawText(text)
-    text = "Scroll: Rotate"
-    surface.SetFont("oglDefenseHudHint")
-    w, h = surface.GetTextSize(text)
-    surface.SetTextPos((ScrW() / 2) - (w / 2) + 200, ScrH() - h)
-    surface.DrawText(text)
+    local _, textH = PIXEL.DrawSimpleText(
+        "Placing Tier " .. PIXEL.Defences.Editor.CurBox.DefenceTier .. " Defence",
+        "Defences.EditorType", centerW, textX,
+        PIXEL.Defences.Editor.ValidPlacement and PIXEL.Colors.PrimaryText or PIXEL.Colors.Negative, TEXT_ALIGN_CENTER
+    )
+    textX = textX + textH + PIXEL.Scale(2)
+
+    _, textH = PIXEL.DrawSimpleText(
+        "Rotation: " .. PIXEL.Defences.Editor.Yaw .. "°",
+        "Defences.EditorRotation", centerW, textX,
+        PIXEL.Colors.Primary, TEXT_ALIGN_CENTER
+    )
+    textX = textX + textH + PIXEL.Scale(6)
+
+    _, textH = PIXEL.DrawSimpleText(
+        "Left Click: Place    Right Click: Cancel    Scroll: Rotate",
+        "Defences.EditorHint", centerW, textX,
+        PIXEL.Colors.SecondaryText, TEXT_ALIGN_CENTER
+    )
 end
