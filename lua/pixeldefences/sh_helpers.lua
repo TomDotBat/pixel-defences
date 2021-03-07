@@ -7,7 +7,7 @@ function PIXEL.Defences.GetLookingAtEnt(ply)
     traceData["start"] = ply:EyePos()
     traceData["endpos"] = traceData["start"] + ply:EyeAngles():Forward() * maxDist
 
-    local tr = util.TraceLine(traceData).HitPos
+    local tr = util.TraceLine(traceData)
     local ent = tr.Entity
 
     if not IsValid(ent) then return end
