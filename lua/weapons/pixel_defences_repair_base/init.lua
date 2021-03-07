@@ -12,10 +12,10 @@ function SWEP:PrimaryAttack()
 	local lookingAtEnt = PIXEL.Defences.GetLookingAtEnt(self:GetOwner())
 	if not lookingAtEnt then return end
 
-	local newhealth = lookingAtEnt:GetDefenceHealth() + 1
-	if newhealth > lookingAtEnt.DefenceMaxHP then return end
+	local newHealth = lookingAtEnt:GetDefenceHealth() + 1
+	if newHealth > lookingAtEnt.DefenceMaxHP then return end
 
-	lookingAtEnt:SetDefenceHealth(newhealth)
+	lookingAtEnt:SetDefenceHealth(newHealth)
 
 	self.NextUse = CurTime() + self.HealSpeed
 end
