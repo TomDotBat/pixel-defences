@@ -1,95 +1,95 @@
 
-if (!oglbdeditor) then
-    oglbdeditor = {}
-    oglbdeditor.isEditing = false
-    oglbdeditor.yaw = 0
-    oglbdeditor.curBox = nil
-    oglbdeditor.ghostProp = nil
-    oglbdeditor.validPlacement = false
+if not PIXEL.Defences.Editor then
+    PIXEL.Defences.Editor = {}
+    PIXEL.Defences.Editor.IsEditing = false
+    PIXEL.Defences.Editor.Yaw = 0
+    PIXEL.Defences.Editor.CurBox = nil
+    PIXEL.Defences.Editor.GhostProp = nil
+    PIXEL.Defences.Editor.ValidPlacement = false
 end
 
-hook.Add("HUDShouldDraw", "oglbasedefense_hideweaponselect", function(name)
-    if (name == "CHudWeaponSelection" and oglbdeditor.isEditing) then return false end
+hook.Add("HUDShouldDraw", "PIXEL.Defences.PreventWeaponSelect", function(name)
+    if (name == "CHudWeaponSelection" and PIXEL.Defences.Editor.IsEditing) then return false end
 end)
 
-hook.Add( "CreateMove", "oglbasedefense_scrollrotate", function()
-    if (oglbdeditor.isEditing) then
+hook.Add( "CreateMove", "PIXEL.Defences.RotateWithScroller", function()
+    if (PIXEL.Defences.Editor.IsEditing) then
         if (input.WasMousePressed(MOUSE_WHEEL_UP)) then
-            oglbdeditor.yaw = oglbdeditor.yaw + 5
-            if (oglbdeditor.yaw > 360) then oglbdeditor.yaw = 5 end
+            PIXEL.Defences.Editor.Yaw = PIXEL.Defences.Editor.Yaw + 5
+            if (PIXEL.Defences.Editor.Yaw > 360) then PIXEL.Defences.Editor.Yaw = 5 end
         elseif (input.WasMousePressed(MOUSE_WHEEL_DOWN)) then
-            oglbdeditor.yaw = oglbdeditor.yaw - 5
-            if (oglbdeditor.yaw < 0) then oglbdeditor.yaw = 355 end
+            PIXEL.Defences.Editor.Yaw = PIXEL.Defences.Editor.Yaw - 5
+            if (PIXEL.Defences.Editor.Yaw < 0) then PIXEL.Defences.Editor.Yaw = 355 end
         end
 
-        if (input.WasMousePressed(MOUSE_LEFT) and oglbdeditor.validPlacement) then
+        if (input.WasMousePressed(MOUSE_LEFT) and PIXEL.Defences.Editor.ValidPlacement) then
             net.Start("PIXEL.Defences.FinishEditing")
-             net.WriteEntity(oglbdeditor.curBox)
-             net.WriteUInt(oglbdeditor.yaw, 9)
+             net.WriteEntity(PIXEL.Defences.Editor.CurBox)
+             net.WriteUInt(PIXEL.Defences.Editor.Yaw, 9)
             net.SendToServer()
 
-            oglbdeditor.isEditing = false
+            PIXEL.Defences.Editor.IsEditing = false
         elseif (input.WasMousePressed(MOUSE_RIGHT)) then
             net.Start("PIXEL.Defences.AbortEditing")
-             net.WriteEntity(oglbdeditor.curBox)
+             net.WriteEntity(PIXEL.Defences.Editor.CurBox)
             net.SendToServer()
 
-            oglbdeditor.isEditing = false
+            PIXEL.Defences.Editor.IsEditing = false
         end      
     end
 end )
 
-hook.Add("Think", "oglbasedefense_think", function()
-    if (!oglbdeditor.isEditing) then 
-        if (IsValid(oglbdeditor.ghostProp)) then
-            oglbdeditor.ghostProp:Remove()
+hook.Add("Think", "PIXEL.Defences.UpdateGhost", function()
+    if (!PIXEL.Defences.Editor.IsEditing) then 
+        if (IsValid(PIXEL.Defences.Editor.GhostProp)) then
+            PIXEL.Defences.Editor.GhostProp:Remove()
 
-            oglbdeditor.curBox = nil
-            oglbdeditor.ghostProp = nil
+            PIXEL.Defences.Editor.CurBox = nil
+            PIXEL.Defences.Editor.GhostProp = nil
         end
         return
     end
 
-    if (not IsValid(oglbdeditor.ghostProp)) then
-        oglbdeditor.ghostProp = ClientsideModel(oglbdeditor.curBox.DefenseModel, RENDERGROUP_STATIC)
-        oglbdeditor.ghostProp:SetMaterial("models/wireframe")
+    if (not IsValid(PIXEL.Defences.Editor.GhostProp)) then
+        PIXEL.Defences.Editor.GhostProp = ClientsideModel(PIXEL.Defences.Editor.CurBox.DefenseModel, RENDERGROUP_STATIC)
+        PIXEL.Defences.Editor.GhostProp:SetMaterial("models/wireframe")
     end
 
-    local pos, ang = oglbdSetDefensePos(oglbdeditor.ghostProp, LocalPlayer(), oglbdeditor.curBox.Max)
+    local pos, ang = PIXEL.Defences.GetPlacementPos(PIXEL.Defences.Editor.GhostProp, LocalPlayer(), PIXEL.Defences.Editor.CurBox.Max)
 
     if (!pos) then
-        --oglbdeditor.ghostProp:SetNoDraw(true)
-        oglbdeditor.ghostProp:SetColor(Color(255, 0, 0))
-        oglbdeditor.validPlacement = false
+        --PIXEL.Defences.Editor.GhostProp:SetNoDraw(true)
+        PIXEL.Defences.Editor.GhostProp:SetColor(Color(255, 0, 0))
+        PIXEL.Defences.Editor.ValidPlacement = false
         return
     end
 
-    ang.yaw = oglbdeditor.yaw
+    ang.Yaw = PIXEL.Defences.Editor.Yaw
 
-    oglbdeditor.ghostProp:SetColor(Color(255, 255, 255))
-    oglbdeditor.ghostProp:SetAngles(ang)
-    oglbdeditor.ghostProp:SetPos(pos)
-    oglbdeditor.ghostProp:SetNoDraw(false)
-    oglbdeditor.validPlacement = true
+    PIXEL.Defences.Editor.GhostProp:SetColor(Color(255, 255, 255))
+    PIXEL.Defences.Editor.GhostProp:SetAngles(ang)
+    PIXEL.Defences.Editor.GhostProp:SetPos(pos)
+    PIXEL.Defences.Editor.GhostProp:SetNoDraw(false)
+    PIXEL.Defences.Editor.ValidPlacement = true
 end)
 
 net.Receive("PIXEL.Defences.StartEditing", function(len, ply)
-    oglbdeditor.curBox = net.ReadEntity()
-    oglbdeditor.isEditing = true
+    PIXEL.Defences.Editor.CurBox = net.ReadEntity()
+    PIXEL.Defences.Editor.IsEditing = true
 end)
 
 net.Receive("PIXEL.Defences.AbortEditing", function(len, ply)
-    oglbdeditor.isEditing = false
-    oglbdeditor.curBox = nil
+    PIXEL.Defences.Editor.IsEditing = false
+    PIXEL.Defences.Editor.CurBox = nil
 end)
 
 net.Receive("PIXEL.Defences.AbortEditing2", function(len, ply)
     net.Start("PIXEL.Defences.AbortEditing")
-     net.WriteEntity(oglbdeditor.curBox)
+     net.WriteEntity(PIXEL.Defences.Editor.CurBox)
     net.SendToServer()
 end)
 
 net.Receive("PIXEL.Defences.FinishEditing", function(len, ply)
-    oglbdeditor.isEditing = false
-    oglbdeditor.curBox = nil
+    PIXEL.Defences.Editor.IsEditing = false
+    PIXEL.Defences.Editor.CurBox = nil
 end)
