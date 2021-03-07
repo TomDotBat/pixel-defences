@@ -1,0 +1,23 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/props_fortifications/block_wall_03"
+	"$bumpmap" "models/props_fortifications/block_wall_03_frozen_normal"
+
+	//phong parameters
+
+	"$phong" "1"
+	"$phongboost" "20"
+	"$phongexponent" "100"
+	"$phongfresnelranges" "[.1 .4 1]"
+	"$phongtint" "[ 1 1 1 ]"
+	
+	// Environment map
+	"$normalmapalphaenvmapmask" "1" // Not supported when self illum fresnel is enabled!
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[ .2 .2 .2 ]"
+	
+	"$detail" "detail/ice_detail_01"
+	"$detailscale" "1"
+	"$detailblendfactor" ".2"
+	"$detailblendmode" "1"
+}

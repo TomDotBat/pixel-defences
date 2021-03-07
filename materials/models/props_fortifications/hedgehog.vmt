@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/props_fortifications/hedgehog"
+	"$bumpmap" "models/props_fortifications/hedgehog_normal"
+
+	//phong parameters
+
+	"$phong" "1"
+	"$phongboost" "28"
+	"$phongexponent" "55"
+	"$phongfresnelranges" "[.1 .4 1]"
+	"$phongtint" "[ 0.4 0.6 0.8 ]"
+	
+	// Environment map
+	"$normalmapalphaenvmapmask" "1" // Not supported when self illum fresnel is enabled!
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.3 0.3 0.3]"
+}
