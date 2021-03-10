@@ -42,6 +42,7 @@ PIXEL.RegisterFont("Defences.EditorHint", "Open Sans SemiBold", 24)
 
 function SWEP:DrawHUD()
     if not PIXEL.Defences.Editor.IsEditing then return end
+    if not IsValid(PIXEL.Defences.Editor.CurBox) then return end
 
     local centerW = ScrW() * .5
     local textX = ScrH() * .8
