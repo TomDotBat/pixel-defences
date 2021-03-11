@@ -36,6 +36,16 @@ end
 
 if SERVER then return end
 
+function SWEP:Think()
+    if not self.Cancelled and self:GetOwner():InVehicle() then
+        net.Start("PIXEL.Defences.AbortEditing")
+         net.WriteEntity(PIXEL.Defences.Editor.CurBox)
+        net.SendToServer()
+
+        self.Cancelled = true
+    end
+end
+
 PIXEL.RegisterFont("Defences.EditorType", "Open Sans Bold", 40)
 PIXEL.RegisterFont("Defences.EditorRotation", "Open Sans SemiBold", 34)
 PIXEL.RegisterFont("Defences.EditorHint", "Open Sans SemiBold", 24)
